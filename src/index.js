@@ -16,8 +16,7 @@ if(program.path){
     var fileContent = fs.readFileSync(program.path);
     var config = JSON.parse(fileContent);
     if (config.src && config.dist) {
-        options.config = config;
-        parser.setOption(options);
+        parser.setOption(config);
     } else {
         console.error('Config file invalid. Expecting a JSON object with a src and dist attributes');
     }

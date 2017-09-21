@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/knnthlu/properties-duplicate.git"
+    "url": "git+https://github.com/knnthlu/check-properties-duplicate.git"
   },
   "keywords": [
     "json",
@@ -23,7 +23,7 @@
   ],
   "author": "Kenneth Lu",
   "license": "MIT",
-  "homepage": "https://github.com/knnthlu/properties-duplicate#readme",
+  "homepage": "https://github.com/knnthlu/check-properties-duplicate#readme",
   "dependencies": {
     "commander": "2.9.0"
   },
