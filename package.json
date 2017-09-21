@@ -1,6 +1,6 @@
 {
   "name": "check-properties-duplicate",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Return duplicate keys in properties file. Outputs in json file.",
   "main": "src/index.js",
   "scripts": {
