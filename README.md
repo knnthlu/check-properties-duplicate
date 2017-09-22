@@ -7,9 +7,9 @@ Return duplicate data in properties file
 
 ## How to use
 
-Create a json config
+Create a json config for source path and destination path.
 
-Example
+Example:
 **myconfig.json
 ```
 {
@@ -20,17 +20,15 @@ Example
 
 then run
 
-`check-properties-duplicate -p config.json`
+`check-properties-duplicate -p myconfig.json`
 
-
-Example
+## See sample below:
 
 **myfile.properties
 ```
 prop_hello = Hello
 prop_hi = Hi
 prop_hello = Ola
-
 ```
 
 It will output:
@@ -40,5 +38,4 @@ It will output:
 {
     "prop_hello": "Ola"
 }
-
 ```
