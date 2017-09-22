@@ -1,11 +1,11 @@
 # check-properties-duplicate
 Return duplicate data in properties file
 
-## Installation
+### Installation
 
 `npm install check-properties-duplicate`
 
-## How to use
+### How to use
 
 Create a json config for source path and destination path.
 
@@ -22,7 +22,7 @@ then run
 
 `check-properties-duplicate -p myconfig.json`
 
-## See sample below:
+### See sample below:
 
 **myfile.properties
 ```
