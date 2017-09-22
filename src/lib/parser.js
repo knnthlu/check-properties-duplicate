@@ -1,10 +1,5 @@
 var files = require('./files');
-
-var getDuplicateItem = function(keys, value, output){
-    var key = keys[0];
-    output[key] = value;
-    return output;
-}
+var glob = require('glob');  
 
 var getDuplicate = function(lines){
     var output = {};
@@ -14,28 +9,31 @@ var getDuplicate = function(lines){
         var divider = line.indexOf('='); 
         var key = line.slice(0, divider);
         var value = line.slice(divider + 1);
-        key = key.trim();
+        key = key.replace(/\s/g, '');
         if(key != ""){
             if(_temp.indexOf(key) === -1)
-                uniq_str.push(key);
+                _temp.push(key);
             else
-                getDuplicateItem(key, value, output);
+                output[key] = value;
         }
     });
+    return output;
 }
 
 exports.parsing = function(options){
-    var propertiesFiles = files.getPropertiesFiles(options.src);
-
-    if (propertiesFiles) {
-        propertiesFiles.forEach(function (file) {
-            var promise = files.getFileDataAsLines(options.src, file);
-            promise.then(function (lines) {
-                var duplicate = getDuplicate(lines);
-                files.writeAsJson(options.dist, file, JSON.stringify(duplicate, null));
+    glob(options.src + '/**/*.properties', function(err, _files) {
+        var propertiesFiles = _files;
+        if (propertiesFiles) {
+            propertiesFiles.forEach(function (file) {
+                var new_dist = options.dist + file.substr(options.src.length);
+                var promise = files.getFileDataAsLines(file);
+                promise.then(function (lines) {
+                    var duplicate = getDuplicate(lines);
+                    files.writeAsJson(new_dist, JSON.stringify(duplicate, null, 4));
+                });
             });
-        });
-    }
+        }
+    });
 }
 
 exports.setOption = function(options){
@@ -43,6 +41,5 @@ exports.setOption = function(options){
         src: options.src, 
         dist: options.dist 
     }
-
     exports.parsing(location);
 }

@@ -1,43 +1,56 @@
 var fs = require('fs'),
-readline = require('readline');
+readline = require('readline'),
+mkdirp = require('mkdirp');
 
-exports.getPropertiesFiles = function (dir) {
-    return getFiles(dir, 'properties');
-};
-
-var getFiles = function (dir, extension) {
-    if (!fs.existsSync(dir)) {
-        console.error('The src directory [ ' + dir + ' ] does not exist.');
+exports.getFileDataAsLines = function (dir) {
+    var fullPath = dir;
+    if (!fs.existsSync(fullPath)) {
+        console.error('The file identified by the full path [ ' + fullPath + ' ] is not found.');
         return;
     }
 
-    // Set the regex to match any string ending with .json
-    var regex = new RegExp('\\.' + extension);
-    // Retrieve all the files in the directory
-    var files = fs.readdirSync(dir);
-    // The identified json file names
-    var _files = [];
-    if (files) {
-        files.forEach(function (file) {
-            if (regex.test(file)) {
-                _files.push(file);
-            }
-        });
-    }
-    return _files;
-};
-
-exports.writeAsJson = function (dir, file, json) {
-    if (!fs.existsSync(dir)) {
-        console.error('The output directory [ ' + dir + ' ] is not a valid directory');
-        return;
-    }
-
-    var fileName = file.substr(0, file.length - 11); //Omit the .properties extension from the file name
-    var writeStream = fs.createWriteStream(dir.concat('\\').concat(fileName.concat('.json')), {
-        autoClose: false
+    var inputStream = fs.createReadStream(fullPath);
+    var reader = readline.createInterface({
+        input: inputStream
     });
 
+    var lines = [];
+    reader.on('line', function (line) {
+        lines.push(line);
+    });
+
+    var promise = new Promise(function (resolve) {
+        reader.on('close', function () {
+            resolve(lines);
+        });
+    });
+
+    return promise;
+};
+
+var createFile = function(full_dir, json){
+    var writeStream = fs.createWriteStream(full_dir, {
+        autoClose: false
+    });
     writeStream.write(json);
     writeStream.end();
+
+};
+
+exports.writeAsJson = function (dir, json) {
+    var fileName = dir.substr(0, dir.length - 11); //remove .properties extension from the file name
+    var full_dir = fileName.concat('.json');
+
+    var get_location = full_dir.split('/');
+    var get_location_length = get_location[get_location.length - 1].length;
+    get_location = full_dir.substr(0, full_dir.length - get_location_length);
+    if (!fs.existsSync(get_location)) {
+        mkdirp(get_location, function (err) {
+            if(err) 
+                console.error(err);
+            else
+                createFile(full_dir, json);
+        });
+    } else 
+        createFile(full_dir, json);
 };
